@@ -1,8 +1,11 @@
 import type { NextPage } from 'next';
-import { ShopLayout } from '../components/layouts';
-import Typography from '@mui/material/Typography';
+import { Typography } from '@mui/material';
 
-const Home: NextPage = () => {
+import { ShopLayout } from '../components/layouts';
+import { initialData } from '../database/products';
+import { ProductList } from '../components/products';
+
+const HomePage: NextPage = () => {
   return (
     <ShopLayout
       title={'Teslo-Shop - Home'}
@@ -19,8 +22,10 @@ const Home: NextPage = () => {
       >
         Todos los productos
       </Typography>
+
+      <ProductList products={initialData.products as any} />
     </ShopLayout>
   );
 };
 
-export default Home;
+export default HomePage;
