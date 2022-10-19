@@ -3,6 +3,8 @@ import type { AppProps } from 'next/app';
 import { ThemeProvider, CssBaseline } from '@mui/material';
 import { lightTheme } from '../themes';
 
+import 'animate.css';
+
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <ThemeProvider theme={lightTheme}>
