@@ -4,7 +4,7 @@ import Head from 'next/head';
 import { Navbar, SideMenu } from '../ui';
 
 interface Props {
-  children: ReactNode;
+  children?: ReactNode;
   title: string;
   pageDescription: string;
   imageFullUrl?: string;
