@@ -116,7 +116,7 @@ export const Navbar = () => {
           <SearchOutlined />
         </IconButton>
 
-        <NextLink href="/cart" passHref>
+        <NextLink href={numberOfItems ? '/cart' : '/cart/empty '} passHref>
           <Link>
             <IconButton>
               <Badge

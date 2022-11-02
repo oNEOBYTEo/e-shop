@@ -15,7 +15,6 @@ export const ItemCounter: FC<Props> = ({
   maxValue,
   updatedQuantity,
 }) => {
-  console.log(maxValue);
   return (
     <Box display="flex" alignItems="center">
       <IconButton
