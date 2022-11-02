@@ -15,7 +15,7 @@ import { ShopLayout } from '../../components/layouts';
 const CartPage: NextPage = () => {
   return (
     <ShopLayout
-      title="Carrito-3"
+      title="Carrito"
       pageDescription="Carrito de compras de la tienda"
     >
       <Typography variant="h1" component="h1">
