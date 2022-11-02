@@ -1,26 +1,62 @@
-import React from 'react';
+import { useContext, useState } from 'react';
 import { NextPage, GetStaticPaths, GetStaticProps } from 'next';
+import { useRouter } from 'next/router';
 
 import { Grid, Box, Typography, Button, Chip } from '@mui/material';
 
 import { ShopLayout } from '../../components/layouts/ShopLayout';
-
 import { ProductSlideshow } from '../../components/products';
 import { ItemCounter } from '../../components/ui/ItemCounter';
 import { SizeSelector } from '../../components/products/SizeSelector';
-import { IProduct } from '../../interfaces';
+
+import { ICartProduct, IProduct, ISize } from '../../interfaces';
+
 import { dbProducts } from '../../database';
+
+import { CartContext } from '../../context';
 
 interface Props {
   product: IProduct;
 }
 
 const ProductPage: NextPage<Props> = ({ product }) => {
-  // const { query } = useRouter();
+  const router = useRouter();
 
-  // const { products: product, isLoading } = useProducts(
-  //   `/products/${query.slug}`
-  // );
+  const { addProductToCart } = useContext(CartContext);
+
+  const [tempCartProduct, setTempCartProduct] = useState<ICartProduct>({
+    _id: product._id,
+    image: product.images[0],
+    price: product.price,
+    size: undefined,
+    slug: product.slug,
+    title: product.title,
+    inStock: product.inStock,
+    gender: product.gender,
+    quantity: 1,
+  });
+
+  const selectedSize = (size: ISize) => {
+    setTempCartProduct((currentProduct) => ({
+      ...currentProduct,
+      size,
+    }));
+  };
+
+  const onUpdateQuantity = (newQuantity: number) => {
+    setTempCartProduct((currentProduct) => ({
+      ...currentProduct,
+      quantity: newQuantity,
+    }));
+  };
+
+  const onAddProduct = () => {
+    if (!tempCartProduct.size) {
+      return;
+    }
+    addProductToCart(tempCartProduct);
+    router.push('/cart');
+  };
 
   return (
     <ShopLayout title={product.title} pageDescription={product.description}>
@@ -40,18 +76,36 @@ const ProductPage: NextPage<Props> = ({ product }) => {
 
             <Box sx={{ mt: 2 }}>
               <Typography variant="subtitle2">Cantidad</Typography>
-              <ItemCounter />
+              <ItemCounter
+                currentValue={tempCartProduct.quantity}
+                updatedQuantity={onUpdateQuantity}
+                maxValue={product.inStock}
+              />
               <SizeSelector
-                // selectedSize={product.sizes[0]}
+                selectedSize={tempCartProduct.size}
                 sizes={product.sizes}
+                onSelectedSize={selectedSize}
               />
             </Box>
-
-            <Button color="secondary" className="circular-btn ">
-              Agregar al carrito
-            </Button>
-
-            {/* <Chip label="No hay disponibles" color="error" variant="outlined" /> */}
+            {product.inStock > 0 ? (
+              <Button
+                color="secondary"
+                className="circular-btn "
+                sx={{ my: 1 }}
+                onClick={onAddProduct}
+              >
+                {tempCartProduct.size
+                  ? 'Agregar al carrito'
+                  : 'Seleccione una talla'}
+              </Button>
+            ) : (
+              <Chip
+                label="No hay disponibles"
+                color="error"
+                variant="outlined"
+                sx={{ my: 1 }}
+              />
+            )}
 
             <Box sx={{ mt: 3 }}>
               <Typography variant="subtitle2">Descripción:</Typography>
@@ -85,7 +139,6 @@ const ProductPage: NextPage<Props> = ({ product }) => {
 //     },
 //   };
 // };
-
 
 export const getStaticPaths: GetStaticPaths = async (ctx) => {
   const productSlugs = await dbProducts.getAllProductSlugs();
