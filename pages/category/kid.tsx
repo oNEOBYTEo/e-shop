@@ -8,20 +8,20 @@ import { useProducts } from '../../hooks';
 
 import { FullScreenLoading } from '../../components/ui';
 
-const WomenPage: NextPage = () => {
-  const { products, isLoading } = useProducts('/products?gender=women');
+const KidPage: NextPage = () => {
+  const { products, isLoading } = useProducts('/products?gender=kid');
 
   return (
     <ShopLayout
-      title={'Teslo-Shop - Women'}
-      pageDescription={'Encuentra los mejores productos de Teslo para ellas'}
+      title={'Teslo-Shop - Kids'}
+      pageDescription={'Encuentra los mejores productos de Teslo para niños'}
     >
       <>
         <Typography variant="h1" component="h1">
-          Mujeres
+          Niños
         </Typography>
         <Typography variant="h2" sx={{ mb: 1 }}>
-          Productos para ellas
+          Productos para niños
         </Typography>
 
         {isLoading ? (
@@ -34,4 +34,4 @@ const WomenPage: NextPage = () => {
   );
 };
 
-export default WomenPage;
+export default KidPage;

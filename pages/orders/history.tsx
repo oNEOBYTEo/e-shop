@@ -1,9 +1,9 @@
 import NextLink from 'next/link';
 
-import { Chip, Grid, Link, Typography } from '@mui/material';
+import { Typography, Grid, Chip, Link } from '@mui/material';
 import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
 
-import { ShopLayout } from '../../components/layouts/ShopLayout';
+import { ShopLayout } from '../../components/layouts';
 
 const columns: GridColDef[] = [
   { field: 'id', headerName: 'ID', width: 100 },
@@ -12,21 +12,19 @@ const columns: GridColDef[] = [
   {
     field: 'paid',
     headerName: 'Pagada',
-    description: 'Muestra información si esta pagada la orden o no',
+    description: 'Muestra información si está pagada la orden o no',
     width: 200,
     renderCell: (params: GridRenderCellParams) => {
       return params.row.paid ? (
-        <Chip color="success" label="pagada" variant="outlined" />
+        <Chip color="success" label="Pagada" variant="outlined" />
       ) : (
         <Chip color="error" label="No pagada" variant="outlined" />
       );
     },
   },
-
   {
-    field: 'order',
-    headerName: 'Orden',
-    description: 'Lleva al la orden especifica',
+    field: 'orden',
+    headerName: 'Ver orden',
     width: 200,
     sortable: false,
     renderCell: (params: GridRenderCellParams) => {
@@ -40,54 +38,36 @@ const columns: GridColDef[] = [
 ];
 
 const rows = [
-  {
-    id: 1,
-    paid: true,
-    fullname: 'Anderson cifuentes',
-  },
-  {
-    id: 2,
-    paid: false,
-    fullname: 'Natalia Herrera',
-  },
-  {
-    id: 3,
-    paid: true,
-    fullname: 'Fernando Herrera',
-  },
-  {
-    id: 4,
-    paid: false,
-    fullname: 'Jose Gutierrez',
-  },
-  {
-    id: 5,
-    paid: true,
-    fullname: 'Michel Molano',
-  },
+  { id: 1, paid: true, fullname: 'Fernando Herrera' },
+  { id: 2, paid: false, fullname: 'Melissa Flores' },
+  { id: 3, paid: true, fullname: 'Hernando Vallejo' },
+  { id: 4, paid: false, fullname: 'Emin Reyes' },
+  { id: 5, paid: false, fullname: 'Eduardo Rios' },
+  { id: 6, paid: true, fullname: 'Natalia Herrera' },
 ];
 
 const HistoryPage = () => {
   return (
     <ShopLayout
-      title="Historial de ordenes"
-      pageDescription="Historial de ordenes del cliente"
+      title={'Historial de ordenes'}
+      pageDescription={'Historial de ordenes del cliente'}
     >
-      <Typography variant="h1" component="h1">
-        Historial de ordenes
-      </Typography>
+      <>
+        <Typography variant="h1" component="h1">
+          Historial de ordenes
+        </Typography>
 
-      <Grid container>
-        <Grid item xs={12} sx={{ height: 620, width: '100%' }}>
-          <DataGrid
-            rows={rows}
-            columns={columns}
-            pageSize={10}
-            rowsPerPageOptions={[10]}
-            disableSelectionOnClick
-          />
+        <Grid container>
+          <Grid item xs={12} sx={{ height: 650, width: '100%' }}>
+            <DataGrid
+              rows={rows}
+              columns={columns}
+              pageSize={10}
+              rowsPerPageOptions={[10]}
+            />
+          </Grid>
         </Grid>
-      </Grid>
+      </>
     </ShopLayout>
   );
 };
