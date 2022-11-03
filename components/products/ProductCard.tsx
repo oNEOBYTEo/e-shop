@@ -1,20 +1,17 @@
 import { FC, useMemo, useState } from 'react';
 import NextLink from 'next/link';
-
 import {
-  Box,
+  Grid,
   Card,
   CardActionArea,
   CardMedia,
-  Chip,
-  Grid,
-  Link,
+  Box,
   Typography,
+  Link,
+  Chip,
 } from '@mui/material';
 
 import { IProduct } from '../../interfaces';
-
-import 'animate.css';
 
 interface Props {
   product: IProduct;
@@ -31,14 +28,11 @@ export const ProductCard: FC<Props> = ({ product }) => {
   }, [isHovered, product.images]);
 
   return (
-    <Grid
-      item
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      sm={4}
-      xs={6}
-    >
-      <Card>
+    <Grid item xs={6} sm={4}>
+      <Card
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+      >
         <NextLink href={`/product/${product.slug}`} passHref prefetch={false}>
           <Link>
             <CardActionArea>
@@ -56,12 +50,14 @@ export const ProductCard: FC<Props> = ({ product }) => {
               )}
 
               <CardMedia
-                alt={product.title}
-                className={`animate__animated ${
-                  isHovered ? 'animate__fadeIn' : 'animate__pulse'
-                }`}
                 component="img"
+                className={
+                  !isHovered
+                    ? 'animate__animated'
+                    : 'animate__animated animate__fadeIn'
+                }
                 image={productImage}
+                alt={product.title}
                 onLoad={() => setIsImageLoaded(true)}
               />
             </CardActionArea>

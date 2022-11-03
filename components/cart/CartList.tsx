@@ -1,15 +1,15 @@
 import { FC, useContext } from 'react';
 import NextLink from 'next/link';
-
 import {
-  Typography,
-  Grid,
-  CardActionArea,
-  CardMedia,
-  Link,
   Box,
   Button,
+  CardActionArea,
+  CardMedia,
+  Grid,
+  Link,
+  Typography,
 } from '@mui/material';
+
 import { ItemCounter } from '../ui';
 import { CartContext } from '../../context';
 import { ICartProduct } from '../../interfaces';
@@ -18,24 +18,21 @@ interface Props {
   editable?: boolean;
 }
 
-export const CardList: FC<Props> = ({ editable = false }) => {
-  const {
-    cart: productsInCart,
-    updateCartQuantity,
-    removeCartProduct,
-  } = useContext(CartContext);
+export const CartList: FC<Props> = ({ editable = false }) => {
+  const { cart, updateCartQuantity, removeCartProduct } =
+    useContext(CartContext);
 
-  const onNewCarQuantityValue = (
+  const onNewCartQuantityValue = (
     product: ICartProduct,
-    newQuantity: number
+    newQuantityValue: number
   ) => {
-    product.quantity = newQuantity;
+    product.quantity = newQuantityValue;
     updateCartQuantity(product);
   };
 
   return (
     <>
-      {productsInCart.map((product) => (
+      {cart.map((product) => (
         <Grid
           container
           spacing={2}
@@ -43,6 +40,7 @@ export const CardList: FC<Props> = ({ editable = false }) => {
           sx={{ mb: 1 }}
         >
           <Grid item xs={3}>
+            {/* TODO: llevar a la página del producto */}
             <NextLink href={`/product/${product.slug}`} passHref>
               <Link>
                 <CardActionArea>
@@ -67,12 +65,12 @@ export const CardList: FC<Props> = ({ editable = false }) => {
                   currentValue={product.quantity}
                   maxValue={product.inStock}
                   updatedQuantity={(value) =>
-                    onNewCarQuantityValue(product, value)
+                    onNewCartQuantityValue(product, value)
                   }
                 />
               ) : (
                 <Typography variant="h5">
-                  {product.quantity}
+                  {product.quantity}{' '}
                   {product.quantity > 1 ? 'productos' : 'producto'}
                 </Typography>
               )}

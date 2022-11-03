@@ -1,4 +1,4 @@
-import { FC, PropsWithChildren, useEffect, useReducer } from 'react';
+import { FC, useEffect, useReducer, PropsWithChildren } from 'react';
 import Cookie from 'js-cookie';
 
 import { ICartProduct } from '../../interfaces';
@@ -23,12 +23,12 @@ const CART_INITIAL_STATE: CartState = {
 export const CartProvider: FC<PropsWithChildren> = ({ children }) => {
   const [state, dispatch] = useReducer(cartReducer, CART_INITIAL_STATE);
 
+  // Efecto
   useEffect(() => {
     try {
       const cookieProducts = Cookie.get('cart')
         ? JSON.parse(Cookie.get('cart')!)
         : [];
-
       dispatch({
         type: '[Cart] - LoadCart from cookies | storage',
         payload: cookieProducts,
@@ -54,7 +54,6 @@ export const CartProvider: FC<PropsWithChildren> = ({ children }) => {
       (prev, current) => current.price * current.quantity + prev,
       0
     );
-
     const taxRate = Number(process.env.NEXT_PUBLIC_TAX_RATE || 0);
 
     const orderSummary = {
@@ -68,34 +67,42 @@ export const CartProvider: FC<PropsWithChildren> = ({ children }) => {
   }, [state.cart]);
 
   const addProductToCart = (product: ICartProduct) => {
-    const productInCart = state.cart.some((p) => p._id === product._id);
+    //! Nivel 1
+    // dispatch({ type: '[Cart] - Add Product', payload: product });
 
+    //! Nivel 2
+    // const productsInCart = state.cart.filter( p => p._id !== product._id && p.size !== product.size );
+    // dispatch({ type: '[Cart] - Add Product', payload: [...productsInCart, product] })
+
+    //! Nivel Final
+    const productInCart = state.cart.some((p) => p._id === product._id);
     if (!productInCart)
       return dispatch({
-        type: '[Cart] - Update Products In Cart',
+        type: '[Cart] - Update products in cart',
         payload: [...state.cart, product],
       });
 
     const productInCartButDifferentSize = state.cart.some(
       (p) => p._id === product._id && p.size === product.size
     );
-
     if (!productInCartButDifferentSize)
       return dispatch({
-        type: '[Cart] - Update Products In Cart',
+        type: '[Cart] - Update products in cart',
         payload: [...state.cart, product],
       });
 
+    // Acumular
     const updatedProducts = state.cart.map((p) => {
       if (p._id !== product._id) return p;
       if (p.size !== product.size) return p;
 
+      // Actualizar la cantidad
       p.quantity += product.quantity;
       return p;
     });
 
     dispatch({
-      type: '[Cart] - Update Products In Cart',
+      type: '[Cart] - Update products in cart',
       payload: updatedProducts,
     });
   };
@@ -115,8 +122,8 @@ export const CartProvider: FC<PropsWithChildren> = ({ children }) => {
 
         // Methods
         addProductToCart,
-        updateCartQuantity,
         removeCartProduct,
+        updateCartQuantity,
       }}
     >
       {children}

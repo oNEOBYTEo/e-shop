@@ -1,8 +1,5 @@
 import { useContext, useState } from 'react';
 
-import { UiContext } from '../../context';
-import { useRouter } from 'next/router';
-
 import {
   Box,
   Divider,
@@ -29,9 +26,11 @@ import {
   VpnKeyOutlined,
 } from '@mui/icons-material';
 
+import { UiContext } from '../../context/ui/UiContext';
+import { useRouter } from 'next/router';
+
 export const SideMenu = () => {
   const router = useRouter();
-
   const { isMenuOpen, toggleSideMenu } = useContext(UiContext);
 
   const [searchTerm, setSearchTerm] = useState('');
@@ -42,8 +41,8 @@ export const SideMenu = () => {
   };
 
   const navigateTo = (url: string) => {
-    router.push(url);
     toggleSideMenu();
+    router.push(url);
   };
 
   return (
@@ -55,13 +54,9 @@ export const SideMenu = () => {
     >
       <Box sx={{ width: 250, paddingTop: 5 }}>
         <List>
-          <ListItem
-            sx={{
-              display: { xs: 'flex', sm: 'none' },
-            }}
-            className="fadeIn"
-          >
+          <ListItem>
             <Input
+              sx={{ display: { xs: 'block', sm: 'none' } }}
               autoFocus
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -117,7 +112,7 @@ export const SideMenu = () => {
           <ListItem
             button
             sx={{ display: { xs: '', sm: 'none' } }}
-            onClick={() => navigateTo('/category/kids')}
+            onClick={() => navigateTo('/category/kid')}
           >
             <ListItemIcon>
               <EscalatorWarningOutlined />

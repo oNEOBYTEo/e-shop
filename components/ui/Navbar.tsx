@@ -2,8 +2,6 @@ import { useContext, useState } from 'react';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 
-import { CartContext, UiContext } from '../../context';
-
 import {
   AppBar,
   Badge,
@@ -21,6 +19,8 @@ import {
   SearchOutlined,
   ShoppingCartOutlined,
 } from '@mui/icons-material';
+
+import { CartContext, UiContext } from '../../context';
 
 export const Navbar = () => {
   const { asPath, push } = useRouter();
@@ -67,9 +67,9 @@ export const Navbar = () => {
               </Button>
             </Link>
           </NextLink>
-          <NextLink href="/category/kids" passHref>
+          <NextLink href="/category/kid" passHref>
             <Link>
-              <Button color={asPath === '/category/kids' ? 'primary' : 'info'}>
+              <Button color={asPath === '/category/kid' ? 'primary' : 'info'}>
                 Niños
               </Button>
             </Link>
@@ -77,11 +77,11 @@ export const Navbar = () => {
         </Box>
 
         <Box flex={1} />
+
+        {/* Pantallas pantallas grandes */}
         {isSearchVisible ? (
           <Input
-            sx={{
-              display: { xs: 'none', sm: 'flex' },
-            }}
+            sx={{ display: { xs: 'none', sm: 'flex' } }}
             className="fadeIn"
             autoFocus
             value={searchTerm}
@@ -101,14 +101,13 @@ export const Navbar = () => {
           <IconButton
             onClick={() => setIsSearchVisible(true)}
             className="fadeIn"
-            sx={{
-              display: { xs: 'none', sm: 'flex' },
-            }}
+            sx={{ display: { xs: 'none', sm: 'flex' } }}
           >
             <SearchOutlined />
           </IconButton>
         )}
 
+        {/* Pantallas pequeñas */}
         <IconButton
           sx={{ display: { xs: 'flex', sm: 'none' } }}
           onClick={toggleSideMenu}
@@ -116,7 +115,7 @@ export const Navbar = () => {
           <SearchOutlined />
         </IconButton>
 
-        <NextLink href={numberOfItems ? '/cart' : '/cart/empty '} passHref>
+        <NextLink href={numberOfItems > 0 ? '/cart' : '/cart/empty'} passHref>
           <Link>
             <IconButton>
               <Badge
