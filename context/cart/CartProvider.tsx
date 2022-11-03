@@ -42,7 +42,7 @@ export const CartProvider: FC<PropsWithChildren> = ({ children }) => {
   }, []);
 
   useEffect(() => {
-    Cookie.set('cart', JSON.stringify(state.cart));
+    if (state.cart.length > 0) Cookie.set('cart', JSON.stringify(state.cart));
   }, [state.cart]);
 
   useEffect(() => {
