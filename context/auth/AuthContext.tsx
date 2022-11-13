@@ -15,6 +15,7 @@ interface ContextProps {
     hasError: boolean;
     message?: string;
   }>;
+  logoutUser: () => void;
 }
 
 export const AuthContext = createContext({} as ContextProps);

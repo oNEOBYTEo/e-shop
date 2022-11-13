@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { db, seedDatabase } from '../../database';
-import { Product, User } from '../../models';
+import { Product, User, Country } from '../../models';
 
 type Data = { message: string };
 
@@ -16,6 +16,9 @@ export default async function handler(
 
   await User.deleteMany();
   await User.insertMany(seedDatabase.initialData.users);
+
+  await Country.deleteMany();
+  await Country.insertMany(seedDatabase.initialData.countries);
 
   await Product.deleteMany();
   await Product.insertMany(seedDatabase.initialData.products);

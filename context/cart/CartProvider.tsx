@@ -1,23 +1,38 @@
 import { FC, useEffect, useReducer, PropsWithChildren } from 'react';
-import Cookie from 'js-cookie';
 
 import { ICartProduct } from '../../interfaces';
 import { CartContext, cartReducer } from './';
+import Cookies from 'js-cookie';
 
 export interface CartState {
+  isLoaded: boolean;
   cart: ICartProduct[];
   numberOfItems: number;
   subTotal: number;
   tax: number;
   total: number;
+  shippingAddress?: ShippingAddress;
+}
+
+export interface ShippingAddress {
+  firstName: string;
+  lastName: string;
+  address: string;
+  address2?: string;
+  zip: string;
+  city: string;
+  country: string;
+  phone: string;
 }
 
 const CART_INITIAL_STATE: CartState = {
+  isLoaded: false,
   cart: [],
   numberOfItems: 0,
   subTotal: 0,
   tax: 0,
   total: 0,
+  shippingAddress: undefined,
 };
 
 export const CartProvider: FC<PropsWithChildren> = ({ children }) => {
@@ -26,8 +41,8 @@ export const CartProvider: FC<PropsWithChildren> = ({ children }) => {
   // Efecto
   useEffect(() => {
     try {
-      const cookieProducts = Cookie.get('cart')
-        ? JSON.parse(Cookie.get('cart')!)
+      const cookieProducts = Cookies.get('cart')
+        ? JSON.parse(Cookies.get('cart')!)
         : [];
       dispatch({
         type: '[Cart] - LoadCart from cookies | storage',
@@ -42,7 +57,26 @@ export const CartProvider: FC<PropsWithChildren> = ({ children }) => {
   }, []);
 
   useEffect(() => {
-    if (state.cart.length > 0) Cookie.set('cart', JSON.stringify(state.cart));
+    if (Cookies.get('firstName')) {
+      const shippingAddress = {
+        firstName: Cookies.get('firstName') || '',
+        lastName: Cookies.get('lastName') || '',
+        address: Cookies.get('address') || '',
+        address2: Cookies.get('address2') || '',
+        zip: Cookies.get('zip') || '',
+        city: Cookies.get('city') || '',
+        country: Cookies.get('country') || '',
+        phone: Cookies.get('phone') || '',
+      };
+      dispatch({
+        type: '[Cart] - LoadAddress from Cookies',
+        payload: shippingAddress,
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    if (state.cart.length > 0) Cookies.set('cart', JSON.stringify(state.cart));
   }, [state.cart]);
 
   useEffect(() => {
@@ -67,14 +101,6 @@ export const CartProvider: FC<PropsWithChildren> = ({ children }) => {
   }, [state.cart]);
 
   const addProductToCart = (product: ICartProduct) => {
-    //! Nivel 1
-    // dispatch({ type: '[Cart] - Add Product', payload: product });
-
-    //! Nivel 2
-    // const productsInCart = state.cart.filter( p => p._id !== product._id && p.size !== product.size );
-    // dispatch({ type: '[Cart] - Add Product', payload: [...productsInCart, product] })
-
-    //! Nivel Final
     const productInCart = state.cart.some((p) => p._id === product._id);
     if (!productInCart)
       return dispatch({
@@ -115,6 +141,18 @@ export const CartProvider: FC<PropsWithChildren> = ({ children }) => {
     dispatch({ type: '[Cart] - Remove product in cart', payload: product });
   };
 
+  const updateAddress = (address: ShippingAddress) => {
+    Cookies.set('firstName', address.firstName);
+    Cookies.set('lastName', address.lastName);
+    Cookies.set('address', address.address);
+    Cookies.set('address2', address.address2 || '');
+    Cookies.set('zip', address.zip);
+    Cookies.set('city', address.city);
+    Cookies.set('country', address.country);
+    Cookies.set('phone', address.phone);
+    dispatch({ type: '[Cart] - Update Address', payload: address });
+  };
+
   return (
     <CartContext.Provider
       value={{
@@ -124,6 +162,7 @@ export const CartProvider: FC<PropsWithChildren> = ({ children }) => {
         addProductToCart,
         removeCartProduct,
         updateCartQuantity,
+        updateAddress,
       }}
     >
       {children}
