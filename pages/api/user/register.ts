@@ -75,8 +75,10 @@ const registerUser = async (
 
   try {
     await newUser.save({ validateBeforeSave: true });
+    await db.disconnect();
   } catch (error) {
     console.log(error);
+    await db.disconnect();
     return res.status(500).json({
       message: 'Revisar logs del servidor',
     });

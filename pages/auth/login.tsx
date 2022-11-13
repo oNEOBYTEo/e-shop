@@ -32,6 +32,7 @@ const LoginPage = () => {
   } = useForm<FormData>();
 
   const [showError, setShowError] = useState(false);
+  const destination = router.query.p?.toString() || '/';
 
   const onLoginUser = async ({ email, password }: FormData) => {
     setShowError(false);
@@ -43,7 +44,7 @@ const LoginPage = () => {
       setTimeout(() => setShowError(false), 3000);
     }
 
-    router.replace('/');
+    router.replace(destination);
   };
 
   return (
@@ -107,7 +108,7 @@ const LoginPage = () => {
             </Grid>
 
             <Grid item xs={12} display="flex" justifyContent="end">
-              <NextLink href="/auth/register" passHref>
+              <NextLink href={`/auth/register?p=${destination}`} passHref>
                 <Link underline="always">¿No tienes cuenta?</Link>
               </NextLink>
             </Grid>

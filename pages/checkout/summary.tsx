@@ -1,3 +1,5 @@
+import { useContext, FC } from 'react';
+import { GetStaticProps } from 'next';
 import NextLink from 'next/link';
 
 import {
@@ -13,8 +15,32 @@ import {
 
 import { ShopLayout } from '../../components/layouts/ShopLayout';
 import { CartList, OrderSummary } from '../../components/cart';
+import { CartContext } from '../../context';
+import { dbCountries } from '../../database';
+import { ICountry } from '../../interfaces';
 
-const SummaryPage = () => {
+interface Props {
+  countries: ICountry[];
+}
+
+const SummaryPage: FC<Props> = ({ countries }) => {
+  const { shippingAddress, numberOfItems } = useContext(CartContext);
+
+  if (!shippingAddress) {
+    return <></>;
+  }
+
+  const {
+    address,
+    city,
+    country,
+    firstName,
+    lastName,
+    phone,
+    zip,
+    address2 = '',
+  } = shippingAddress;
+
   return (
     <ShopLayout
       title="Resumen de orden"
@@ -32,7 +58,10 @@ const SummaryPage = () => {
           <Grid item xs={12} sm={5}>
             <Card className="summary-card">
               <CardContent>
-                <Typography variant="h2">Resumen (3 productos)</Typography>
+                <Typography variant="h2">
+                  Resumen ({numberOfItems}
+                  {numberOfItems === 1 ? ' producto' : ' productos'})
+                </Typography>
                 <Divider sx={{ my: 1 }} />
 
                 <Box display="flex" justifyContent="space-between">
@@ -44,11 +73,19 @@ const SummaryPage = () => {
                   </NextLink>
                 </Box>
 
-                <Typography>Fernando Herrera</Typography>
-                <Typography>323 Algun lugar</Typography>
-                <Typography>Stittsville, HYA 23S</Typography>
-                <Typography>Canadá</Typography>
-                <Typography>+1 23123123</Typography>
+                <Typography>
+                  {firstName} {lastName}
+                </Typography>
+                <Typography>
+                  {address}, {address2 ? address2 : ''}
+                </Typography>
+                <Typography>
+                  {city}, {zip}
+                </Typography>
+                <Typography>
+                  {countries.find((c) => c.code === country)?.name}
+                </Typography>
+                <Typography>{phone}</Typography>
 
                 <Divider sx={{ my: 1 }} />
 
@@ -72,6 +109,24 @@ const SummaryPage = () => {
       </>
     </ShopLayout>
   );
+};
+
+export const getStaticProps: GetStaticProps = async (ctx) => {
+  const countries = await dbCountries.getAllCountries();
+
+  if (!countries) {
+    return {
+      props: {
+        countries: [],
+      },
+    };
+  }
+
+  return {
+    props: {
+      countries,
+    },
+  };
 };
 
 export default SummaryPage;
